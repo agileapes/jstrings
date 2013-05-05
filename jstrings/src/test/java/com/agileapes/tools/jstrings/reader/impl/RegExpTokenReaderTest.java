@@ -1,6 +1,6 @@
 package com.agileapes.tools.jstrings.reader.impl;
 
-import com.agileapes.tools.jstrings.scan.impl.ReaderDocumentScanner;
+import com.agileapes.tools.jstrings.scan.impl.DefaultDocumentReader;
 import com.agileapes.tools.jstrings.token.Token;
 import com.agileapes.tools.jstrings.token.impl.ValueToken;
 import com.agileapes.tools.jstrings.token.impl.ValueTokenFactory;
@@ -17,7 +17,7 @@ public class RegExpTokenReaderTest {
 
     @Test
     public void testReadingPattern() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("123+4"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("123+4"));
         final RegExpTokenReader<ValueToken> reader = new RegExpTokenReader<ValueToken>(new ValueTokenFactory(), "\\d+");
         final Token token = scanner.read(reader);
         Assert.assertNotNull(token);
@@ -27,7 +27,7 @@ public class RegExpTokenReaderTest {
 
     @Test
     public void testNotFindingPattern() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("hello123+4"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("hello123+4"));
         final Token token = scanner.read(new RegExpTokenReader<ValueToken>(new ValueTokenFactory(), "\\d+"));
         Assert.assertNull(token);
     }
@@ -35,7 +35,7 @@ public class RegExpTokenReaderTest {
 
     @Test
     public void testFindWithBufferOverreach() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("12345"), 2);
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("12345"), 2);
         final Token token = scanner.read(new RegExpTokenReader<ValueToken>(new ValueTokenFactory(), "\\d+"));
         Assert.assertNotNull(token);
         Assert.assertEquals(token.getValue(), "12");
@@ -43,14 +43,14 @@ public class RegExpTokenReaderTest {
 
     @Test
     public void testNotFindingWithBufferOverreach() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("hello"), 2);
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("hello"), 2);
         final Token token = scanner.read(new RegExpTokenReader<ValueToken>(new ValueTokenFactory(), "\\d+"));
         Assert.assertNull(token);
     }
 
     @Test
     public void testLaziness() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("123.45"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("123.45"));
         final Token token = scanner.read(new RegExpTokenReader<ValueToken>(new ValueTokenFactory(), "\\d+(\\.\\d+)?"));
         Assert.assertNotNull(token);
         Assert.assertEquals(token.getValue(), "123");
@@ -58,7 +58,7 @@ public class RegExpTokenReaderTest {
 
     @Test
     public void testGreediness() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("123.45"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("123.45"));
         final Token token = scanner.read(new RegExpTokenReader<ValueToken>(new ValueTokenFactory(), "\\d+(\\.\\d*)?"));
         Assert.assertNotNull(token);
         Assert.assertEquals(token.getValue(), "123.45");

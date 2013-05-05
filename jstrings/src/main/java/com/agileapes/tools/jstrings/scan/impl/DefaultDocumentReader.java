@@ -3,7 +3,7 @@ package com.agileapes.tools.jstrings.scan.impl;
 import com.agileapes.tools.jstrings.error.ScannerException;
 import com.agileapes.tools.jstrings.error.ScannerReadException;
 import com.agileapes.tools.jstrings.reader.TokenReader;
-import com.agileapes.tools.jstrings.scan.DocumentScanner;
+import com.agileapes.tools.jstrings.scan.DocumentReader;
 import com.agileapes.tools.jstrings.token.Token;
 
 import java.io.IOException;
@@ -13,22 +13,31 @@ import java.io.Reader;
  * @author Mohammad Milad Naseri (m.m.naseri@gmail.com)
  * @since 1.0 (2013/5/5, 1:49)
  */
-public class ReaderDocumentScanner implements DocumentScanner {
+public class DefaultDocumentReader implements DocumentReader {
 
-    public static final int DEFAULT_BUFFER_CAPACITY = 50;
+    public static final int DEFAULT_BUFFER_CAPACITY = 1024;
     private final Reader reader;
     private String buffer = "";
     private int bufferPosition = 0;
     private int bufferCapacity = DEFAULT_BUFFER_CAPACITY;
+    private int lookAheadCapacity = DEFAULT_BUFFER_CAPACITY;
     private long cursor = 0;
 
-    public ReaderDocumentScanner(Reader reader) {
+    public DefaultDocumentReader(Reader reader) {
         this(reader, DEFAULT_BUFFER_CAPACITY);
     }
 
-    public ReaderDocumentScanner(Reader reader, int bufferCapacity) {
+    public DefaultDocumentReader(Reader reader, int bufferCapacity) {
+        this(reader, bufferCapacity, DEFAULT_BUFFER_CAPACITY);
+    }
+
+    public DefaultDocumentReader(Reader reader, int bufferCapacity, int lookAheadCapacity) {
         this.reader = reader;
         this.bufferCapacity = bufferCapacity;
+        this.lookAheadCapacity = lookAheadCapacity;
+        if (lookAheadCapacity > bufferCapacity) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -77,7 +86,7 @@ public class ReaderDocumentScanner implements DocumentScanner {
         int input;
         int count = 0;
         try {
-            while ((input = reader.read()) != -1 && buffer.length() < bufferCapacity) {
+            while ((input = reader.read()) != -1 && buffer.length() < lookAheadCapacity) {
                 buffer += (char) input;
                 count ++;
             }
@@ -95,6 +104,10 @@ public class ReaderDocumentScanner implements DocumentScanner {
     @Override
     public long getBufferCapacity() {
         return bufferCapacity;
+    }
+
+    public Reader getReader() {
+        return reader;
     }
 
 }

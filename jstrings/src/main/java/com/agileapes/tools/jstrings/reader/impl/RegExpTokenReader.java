@@ -2,7 +2,7 @@ package com.agileapes.tools.jstrings.reader.impl;
 
 import com.agileapes.tools.jstrings.error.ScannerException;
 import com.agileapes.tools.jstrings.error.ScannerReadException;
-import com.agileapes.tools.jstrings.scan.DocumentScanner;
+import com.agileapes.tools.jstrings.scan.DocumentReader;
 import com.agileapes.tools.jstrings.token.Token;
 import com.agileapes.tools.jstrings.token.TokenFactory;
 
@@ -26,7 +26,7 @@ public class RegExpTokenReader<T extends Token> extends AbstractFactoryTokenRead
     }
 
     @Override
-    public Token read(DocumentScanner scanner) throws ScannerReadException {
+    public Token read(DocumentReader scanner) throws ScannerReadException {
         String buffer = "";
         if (pattern.matcher("").matches()) {
             //we will not allow for a pattern that matches the empty string

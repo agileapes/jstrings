@@ -1,6 +1,6 @@
 package com.agileapes.tools.jstrings.reader.impl;
 
-import com.agileapes.tools.jstrings.scan.impl.ReaderDocumentScanner;
+import com.agileapes.tools.jstrings.scan.impl.DefaultDocumentReader;
 import com.agileapes.tools.jstrings.token.Token;
 import com.agileapes.tools.jstrings.token.impl.ValueToken;
 import com.agileapes.tools.jstrings.token.impl.ValueTokenFactory;
@@ -17,7 +17,7 @@ public class WhitespaceTokenReaderTest {
 
     @Test
     public void testRead() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("   x"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("   x"));
         final Token token = scanner.read(new WhitespaceTokenReader<ValueToken>(new ValueTokenFactory()));
         Assert.assertNotNull(token);
         Assert.assertEquals(token.getValue(), "   ");

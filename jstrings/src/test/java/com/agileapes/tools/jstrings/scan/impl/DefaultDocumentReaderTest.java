@@ -3,7 +3,7 @@ package com.agileapes.tools.jstrings.scan.impl;
 import com.agileapes.tools.jstrings.error.ScannerException;
 import com.agileapes.tools.jstrings.error.ScannerReadException;
 import com.agileapes.tools.jstrings.reader.TokenReader;
-import com.agileapes.tools.jstrings.scan.DocumentScanner;
+import com.agileapes.tools.jstrings.scan.DocumentReader;
 import com.agileapes.tools.jstrings.token.Token;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -14,7 +14,7 @@ import java.io.StringReader;
  * @author Mohammad Milad Naseri (m.m.naseri@gmail.com)
  * @since 1.0 (2013/5/5, 2:24)
  */
-public class ReaderDocumentScannerTest {
+public class DefaultDocumentReaderTest {
 
     /**
      * We establish a string and read it. The read value must match that of the initial string.
@@ -23,7 +23,7 @@ public class ReaderDocumentScannerTest {
     @Test
     public void testReadingContinuously() throws Exception {
         final String string = "this is a test";
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader(string));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader(string));
         String result = "";
         while (scanner.hasMore()) {
             result += scanner.next();
@@ -40,7 +40,7 @@ public class ReaderDocumentScannerTest {
     public void testRewinding() throws Exception {
         @SuppressWarnings("SpellCheckingInspection")
         final String string = "abcdefghijklmnopqrstuvwxyz";
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader(string));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader(string));
         int position = 0;
         for (; position < string.length(); position ++) {
             Assert.assertEquals(scanner.next(), string.charAt(position));
@@ -62,7 +62,7 @@ public class ReaderDocumentScannerTest {
     @Test(expectedExceptions = ScannerException.class, expectedExceptionsMessageRegExp = ".*overflow.*")
     public void testRewindOverflow() throws Exception {
         final String string = "hello";
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader(string));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader(string));
         for (int i = 0; i < string.length(); i ++) {
             scanner.next();
         }
@@ -79,7 +79,7 @@ public class ReaderDocumentScannerTest {
      */
     @Test(expectedExceptions = ScannerException.class, expectedExceptionsMessageRegExp = ".*overflow.*")
     public void testRewindAfterFlush() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("hello"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("hello"));
         final char first = scanner.next();
         scanner.rewind(1);
         Assert.assertEquals(scanner.next(), first);
@@ -95,11 +95,11 @@ public class ReaderDocumentScannerTest {
      */
     @Test(expectedExceptions = ScannerReadException.class)
     public void testBadlyBehavedReader() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("hello world"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("hello world"));
         scanner.next();
         scanner.read(new TokenReader() {
             @Override
-            public Token read(DocumentScanner scanner) throws ScannerReadException {
+            public Token read(DocumentReader scanner) throws ScannerReadException {
                 try {
                     scanner.rewind(1);
                 } catch (ScannerException e) {
@@ -112,7 +112,7 @@ public class ReaderDocumentScannerTest {
 
     @Test(expectedExceptions = ScannerReadException.class, expectedExceptionsMessageRegExp = "No more .*")
     public void testWithNoMoreToGo() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader(""));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader(""));
         scanner.next();
     }
 }

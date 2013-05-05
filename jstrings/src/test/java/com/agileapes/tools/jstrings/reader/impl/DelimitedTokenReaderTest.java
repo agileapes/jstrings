@@ -1,6 +1,6 @@
 package com.agileapes.tools.jstrings.reader.impl;
 
-import com.agileapes.tools.jstrings.scan.impl.ReaderDocumentScanner;
+import com.agileapes.tools.jstrings.scan.impl.DefaultDocumentReader;
 import com.agileapes.tools.jstrings.token.impl.ValueToken;
 import com.agileapes.tools.jstrings.token.impl.ValueTokenFactory;
 import org.testng.Assert;
@@ -16,7 +16,7 @@ public class DelimitedTokenReaderTest {
 
     @Test
     public void testReadingWithDelimiter() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("hello[<world>]"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("hello[<world>]"));
         final DelimitedTokenReader<ValueToken> reader = new DelimitedTokenReader<ValueToken>(new ValueTokenFactory(), "[<", ">]");
         Assert.assertEquals(scanner.read(reader).getValue(), "hello");
         Assert.assertEquals(scanner.next(), '[');
@@ -29,7 +29,7 @@ public class DelimitedTokenReaderTest {
 
     @Test
     public void testReadingWithLessTextThanDelimiterLength() throws Exception {
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader("hell"));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader("hell"));
         final DelimitedTokenReader<ValueToken> reader = new DelimitedTokenReader<ValueToken>(new ValueTokenFactory(), "<!---");
         Assert.assertEquals(scanner.read(reader).getValue(), "hell");
         Assert.assertFalse(scanner.hasMore());
@@ -38,7 +38,7 @@ public class DelimitedTokenReaderTest {
     @Test
     public void testReadingWithoutDelimiters() throws Exception {
         final String expected = "hello world";
-        final ReaderDocumentScanner scanner = new ReaderDocumentScanner(new StringReader(expected));
+        final DefaultDocumentReader scanner = new DefaultDocumentReader(new StringReader(expected));
         final DelimitedTokenReader<ValueToken> reader = new DelimitedTokenReader<ValueToken>(new ValueTokenFactory(), "[", "]");
         Assert.assertEquals(scanner.read(reader).getValue(), expected);
         Assert.assertFalse(scanner.hasMore());

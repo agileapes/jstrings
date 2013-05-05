@@ -1,7 +1,7 @@
 package com.agileapes.tools.jstrings.reader;
 
 import com.agileapes.tools.jstrings.error.ScannerReadException;
-import com.agileapes.tools.jstrings.scan.DocumentScanner;
+import com.agileapes.tools.jstrings.scan.DocumentReader;
 import com.agileapes.tools.jstrings.token.Token;
 
 /**
@@ -10,6 +10,6 @@ import com.agileapes.tools.jstrings.token.Token;
  */
 public interface TokenReader {
 
-    Token read(DocumentScanner scanner) throws ScannerReadException;
+    Token read(DocumentReader scanner) throws ScannerReadException;
 
 }
